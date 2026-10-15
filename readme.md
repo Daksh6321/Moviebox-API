@@ -1,117 +1,82 @@
-<p align="center">
-  <img src="https://h5-static.aoneroom.com/ssrStatic/mbOfficial/public/_nuxt/web-logo.apJjVir2.svg" alt="LOGO" width="200"/>
-</p>
+# MovieBox REST API (v2.0.0)
 
-«Note: MovieBox has recently moved toward a paid model, and the API no longer appears to provide 1080p streams, with 480p being the highest available quality. As a result, this project is being archived and is no longer actively maintained.»
+[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![Status](https://img.shields.io/badge/Status-1080p_Active-brightgreen?style=flat-square)](https://moviebox.ph)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
-# 🎬 MovieBox API (v1.0.0)
-
-[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Status](https://img.shields.io/badge/Status-Live-4c1?style=for-the-badge)](https://moviebox.ph)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-
-> **The ultimate REST API for MovieBox.ph.** 🚀 Optimized for high-speed metadata scraping, real-time stream extraction, and seamless frontend integration.
+Yeah it's back!. REST API for MovieBox with 1080p stream extraction, adaptive DASH manifests, multi-language subtitle parsing, and an embedded web dashboard.
 
 ---
 
-## ✨ Features
+## Features
 
-- **🏠 Comprehensive Homepage**: Instant access to Banners, Trending Now, Hot, Cinema, and custom Operating categories.
-- **🔍 Advanced Search**: Real-time keyword suggestions and full-text search results.
-- **📱 Tabbed Navigation**: Fully functional endpoints for Movies, TV Series, Animation, and Rankings.
-- **🗃️ Deep Metadata**: Extraction of IMDb ratings, release dates, high-res posters, genres, and dub/sub lists.
-- **▶️ Direct Streaming**: Direct `.mp4` and HLS stream retrieval with automatic server discovery and Cloudflare bypass.
-- **⚡ High Performance**: Built with FastAPI and Httpx for asynchronous, non-blocking requests.
-
----
-
-## 🛠️ Tech Stack
-
-- **Backend**: FastAPI (Python)
-- **Networking**: Httpx (Async HTTP Client)
-- **Parsing**: BeautifulSoup4 & Regex (NUXT_DATA Parsing)
-- **Deployment**: Uvicorn
+- **1080p Stream Extraction**: Direct MP4 streams up to 1080p resolution and DASH manifests.
+- **Signed Policy Decoder**: Decodes signed Edge-Cache-Cookie and CloudFront-Policy tokens.
+- **Subtitles**: Multi-language SRT and VTT caption tracks with authenticated CDN URLs.
+- **Search & Autocomplete**: Keyword search with suggestions and full metadata.
+- **TV & Movies Catalog**: Metadata, seasons, episode breakdowns, and audio dub lists.
+- **Dashboard**: Embedded web UI at root (`/`) for testing streams, watching in-browser, and testing raw JSON endpoints.
 
 ---
 
-## 🚀 Getting Started
+## Tech Stack
 
-### Prerequisites
+- **Framework**: FastAPI
+- **Networking**: `curl_cffi` (TLS/JA3 fingerprint impersonation) with `httpx` fallback
+- **Server**: Uvicorn
 
-- Python 3.9 or higher
-- `pip` (Python package installer)
+---
+
+## Getting Started
 
 ### Installation
 
-1. **Clone the repository**:
+1. Clone the repository:
    ```bash
    git clone https://github.com/walterwhite-69/Moviebox-API.git
    cd Moviebox-API
    ```
 
-2. **Install dependencies**:
+2. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-   *Note: If requirements.txt is missing, install manually:*
-   `pip install fastapi uvicorn httpx beautifulsoup4`
 
-3. **Start the server**:
+3. Start the server:
    ```bash
    uvicorn api:app --host 0.0.0.0 --port 8000 --reload
    ```
 
----
-
-## 📡 API Endpoints
-
-### 🏠 Home
-| Endpoint | Description |
-| :--- | :--- |
-| `GET /home` | Full homepage data including banners and all sections. |
-| `GET /home/banner` | Return only active featured banner items. |
-| `GET /home/sections` | List all available section names and movie counts. |
-| `GET /home/trending` | Get "Trending Now" specific items. |
-
-### 🎬 Movies & TV
-| Endpoint | Description |
-| :--- | :--- |
-| `GET /movies` | Fetch the full movie filter page. |
-| `GET /tv-series` | Fetch the full TV series catalog. |
-| `GET /animation` | Fetch animated series and anime. |
-| `GET /ranking` | Get most-watched and top-rated rankings. |
-
-### 🔍 Search & Details
-| Endpoint | Description |
-| :--- | :--- |
-| `GET /search?q={query}` | Search for any title. |
-| `GET /search/suggest?q={query}` | Get autocomplete suggestions. |
-| `GET /detail/{slug}` | Get full metadata and available stream links. |
-| `GET /api/stream/{id}?detail_path={slug}` | **Raw Stream URL Discovery**. |
+4. Open `http://localhost:8000` in your browser.
 
 ---
 
-## 🏎️ Performance Verification
+## Endpoints
 
-Run the built-in verification suite to ensure all endpoints are pointing to the live backend correctly:
+### Streams & Subtitles
+| Endpoint | Method | Description |
+| :--- | :--- | :--- |
+| `/api/stream/{subject_id}` | `GET` | Resolves 1080p, 720p, 480p, 360p MP4 & DASH streams. Optional query params: `se` (season), `ep` (episode), `detail_path`. |
+| `/api/stream/{subject_id}/captions` | `GET` | Subtitle tracks (.srt/.vtt) with signed URLs. Optional query params: `se`, `ep`, `stream_id`. |
 
-```bash
-python verify.py
-```
+### Search & Details
+| Endpoint | Method | Description |
+| :--- | :--- | :--- |
+| `/search?q={query}&page=1` | `GET` | Search titles with release year, ratings, and posters. |
+| `/search/suggest?q={query}` | `GET` | Search autocomplete suggestions. |
+| `/detail/{subject_id}` | `GET` | Title metadata, genres, audio dubs, and plot summary. |
+| `/episodes/{subject_id}` | `GET` | Season breakdown and episode lists for TV Series. |
+
+### Catalog & Discovery
+| Endpoint | Method | Description |
+| :--- | :--- | :--- |
+| `/movies?page=1` | `GET` | Filtered movies catalog. |
+| `/tv-series?page=1` | `GET` | Filtered TV series catalog. |
+| `/home` | `GET` | Featured banners, trending titles, and section feeds. |
 
 ---
 
-## 🤝 Contributing
+## License
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/walterwhite-69/Moviebox-API/issues).
-
-## 📜 License
-
-Distributed under the **MIT License**. See `LICENSE` for more information.
-
----
-
-<p align="center">
-  Made by walter for the Streaming Community
-</p>
+Distributed under the MIT License. See `LICENSE` for details.
