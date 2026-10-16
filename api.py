@@ -816,15 +816,39 @@ async def dashboard():
                     <tbody>
                         <tr>
                             <td><span class="endpoint-method">GET</span></td>
-                            <td class="endpoint-path">/api/stream/8906247916759695608</td>
-                            <td style="color: var(--text-dim);">Resolve 1080p, 720p, 480p streams</td>
+                            <td class="endpoint-path"><span class="pill" style="margin-right: 6px;">Movie</span>/api/stream/8906247916759695608</td>
+                            <td style="color: var(--text-dim);">Movie Streams 1080p, 720p, 480p (Avatar)</td>
                             <td style="text-align: right;"><a href="/api/stream/8906247916759695608" target="_blank" class="btn-ghost">Test</a></td>
                         </tr>
                         <tr>
                             <td><span class="endpoint-method">GET</span></td>
-                            <td class="endpoint-path">/api/stream/8906247916759695608/captions</td>
-                            <td style="color: var(--text-dim);">Multi-language subtitle tracks (.srt)</td>
+                            <td class="endpoint-path"><span class="pill" style="margin-right: 6px;">Movie</span>/api/stream/8906247916759695608/captions</td>
+                            <td style="color: var(--text-dim);">Movie Subtitle Tracks .srt (Avatar)</td>
                             <td style="text-align: right;"><a href="/api/stream/8906247916759695608/captions" target="_blank" class="btn-ghost">Test</a></td>
+                        </tr>
+                        <tr>
+                            <td><span class="endpoint-method">GET</span></td>
+                            <td class="endpoint-path"><span class="pill active" style="margin-right: 6px;">Series</span>/episodes/6207982430134357800</td>
+                            <td style="color: var(--text-dim);">TV Seasons & Episode Counts (Breaking Bad)</td>
+                            <td style="text-align: right;"><a href="/episodes/6207982430134357800" target="_blank" class="btn-ghost">Test</a></td>
+                        </tr>
+                        <tr>
+                            <td><span class="endpoint-method">GET</span></td>
+                            <td class="endpoint-path"><span class="pill active" style="margin-right: 6px;">Series</span>/api/stream/6207982430134357800?se=1&ep=1</td>
+                            <td style="color: var(--text-dim);">TV Episode Stream: Season 1, Episode 1</td>
+                            <td style="text-align: right;"><a href="/api/stream/6207982430134357800?se=1&ep=1" target="_blank" class="btn-ghost">Test</a></td>
+                        </tr>
+                        <tr>
+                            <td><span class="endpoint-method">GET</span></td>
+                            <td class="endpoint-path"><span class="pill active" style="margin-right: 6px;">Series</span>/api/stream/6207982430134357800?se=1&ep=2</td>
+                            <td style="color: var(--text-dim);">TV Episode Stream: Season 1, Episode 2</td>
+                            <td style="text-align: right;"><a href="/api/stream/6207982430134357800?se=1&ep=2" target="_blank" class="btn-ghost">Test</a></td>
+                        </tr>
+                        <tr>
+                            <td><span class="endpoint-method">GET</span></td>
+                            <td class="endpoint-path"><span class="pill active" style="margin-right: 6px;">Series</span>/api/stream/6207982430134357800/captions?se=1&ep=1</td>
+                            <td style="color: var(--text-dim);">TV Episode Subtitles: Season 1, Episode 1</td>
+                            <td style="text-align: right;"><a href="/api/stream/6207982430134357800/captions?se=1&ep=1" target="_blank" class="btn-ghost">Test</a></td>
                         </tr>
                         <tr>
                             <td><span class="endpoint-method">GET</span></td>
@@ -834,21 +858,15 @@ async def dashboard():
                         </tr>
                         <tr>
                             <td><span class="endpoint-method">GET</span></td>
-                            <td class="endpoint-path">/search/suggest?q=Av</td>
-                            <td style="color: var(--text-dim);">Real-time search autocomplete</td>
-                            <td style="text-align: right;"><a href="/search/suggest?q=Av" target="_blank" class="btn-ghost">Test</a></td>
+                            <td class="endpoint-path">/search/suggest?q=Avatar</td>
+                            <td style="color: var(--text-dim);">Real-time search autocomplete suggestions</td>
+                            <td style="text-align: right;"><a href="/search/suggest?q=Avatar" target="_blank" class="btn-ghost">Test</a></td>
                         </tr>
                         <tr>
                             <td><span class="endpoint-method">GET</span></td>
                             <td class="endpoint-path">/detail/8906247916759695608</td>
-                            <td style="color: var(--text-dim);">Deep metadata, audio dubs, genres</td>
+                            <td style="color: var(--text-dim);">Deep metadata, audio dubs, and plot summary</td>
                             <td style="text-align: right;"><a href="/detail/8906247916759695608" target="_blank" class="btn-ghost">Test</a></td>
-                        </tr>
-                        <tr>
-                            <td><span class="endpoint-method">GET</span></td>
-                            <td class="endpoint-path">/episodes/6207982430134357800</td>
-                            <td style="color: var(--text-dim);">Season and episode breakdown (Series)</td>
-                            <td style="text-align: right;"><a href="/episodes/6207982430134357800" target="_blank" class="btn-ghost">Test</a></td>
                         </tr>
                         <tr>
                             <td><span class="endpoint-method">GET</span></td>
@@ -859,13 +877,13 @@ async def dashboard():
                         <tr>
                             <td><span class="endpoint-method">GET</span></td>
                             <td class="endpoint-path">/tv-series?page=1</td>
-                            <td style="color: var(--text-dim);">Paginated series feed</td>
+                            <td style="color: var(--text-dim);">Paginated TV series feed</td>
                             <td style="text-align: right;"><a href="/tv-series?page=1" target="_blank" class="btn-ghost">Test</a></td>
                         </tr>
                         <tr>
                             <td><span class="endpoint-method">GET</span></td>
                             <td class="endpoint-path">/home</td>
-                            <td style="color: var(--text-dim);">Banners and trending categories</td>
+                            <td style="color: var(--text-dim);">Banners, hot sections, and operating feeds</td>
                             <td style="text-align: right;"><a href="/home" target="_blank" class="btn-ghost">Test</a></td>
                         </tr>
                     </tbody>
