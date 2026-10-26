@@ -192,16 +192,21 @@ def extract_policy_resource(sign_cookie: str | None) -> str | None:
                 pass
     return None
 
+
 class MovieBoxEngine:
     _instance = None
 
     def __init__(self):
         self.device_id = generate_device_id()
         self.bearer_token: Optional[str] = None
+
         if cr:
             self.session = cr.Session(impersonate="chrome120")
         else:
-            self.session = httpx.Client(timeout=25, follow_redirects=True)
+            self.session = httpx.Client(
+                timeout=25,
+                follow_redirects=True
+            )
 
     @classmethod
     def get_instance(cls) -> "MovieBoxEngine":
@@ -209,7 +214,7 @@ class MovieBoxEngine:
             cls._instance = MovieBoxEngine()
         return cls._instance
 
-        def bootstrap_token(self, force: bool = False) -> str:
+    def bootstrap_token(self, force: bool = False) -> str:
         if self.bearer_token and not force:
             return self.bearer_token
 
@@ -228,16 +233,30 @@ class MovieBoxEngine:
 
             print("Bootstrap status:", resp.status_code)
 
+            if resp.status_code != 200:
+                print("Bootstrap response:", resp.text[:300])
+                raise HTTPException(
+                    status_code=502,
+                    detail="Bootstrap request failed",
+                )
+
             x_user = resp.headers.get("x-user")
 
             if not x_user:
-                print("Bootstrap body:", resp.text[:500])
+                print("Bootstrap response body:", resp.text[:500])
                 raise HTTPException(
                     status_code=502,
                     detail="MovieBox token unavailable; check Vercel logs",
                 )
 
-            token_data = json.loads(x_user)
+            try:
+                token_data = json.loads(x_user)
+            except (ValueError, TypeError):
+                raise HTTPException(
+                    status_code=502,
+                    detail="Invalid token response",
+                )
+
             token = token_data.get("token")
 
             if not token:
@@ -255,7 +274,7 @@ class MovieBoxEngine:
             print("Bootstrap error:", type(exc).__name__)
             raise HTTPException(
                 status_code=502,
-                detail="MovieBox token request failed",
+                detail="Bootstrap request failed; check Vercel logs",
             )
 
     def api_request(self, method: str, path_or_url: str, body_dict: Optional[Dict[str, Any]] = None, use_token: bool = True, retry_auth: bool = True) -> Dict[str, Any]:
