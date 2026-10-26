@@ -209,20 +209,54 @@ class MovieBoxEngine:
             cls._instance = MovieBoxEngine()
         return cls._instance
 
-    def bootstrap_token(self, force: bool = False) -> str:
+        def bootstrap_token(self, force: bool = False) -> str:
         if self.bearer_token and not force:
             return self.bearer_token
-        headers = build_auth_headers("GET", BOOTSTRAP_URL, device_id=self.device_id)
-        resp = self.session.get(BOOTSTRAP_URL, headers=headers, timeout=20)
-        x_user = resp.headers.get("x-user")
-        if not x_user:
-            raise HTTPException(status_code=502, detail="Failed to bootstrap MovieBox token")
-        token_data = json.loads(x_user)
-        token = token_data.get("token")
-        if not token:
-            raise HTTPException(status_code=502, detail="Empty token in upstream header")
-        self.bearer_token = token
-        return token
+
+        headers = build_auth_headers(
+            "GET",
+            BOOTSTRAP_URL,
+            device_id=self.device_id,
+        )
+
+        try:
+            resp = self.session.get(
+                BOOTSTRAP_URL,
+                headers=headers,
+                timeout=20,
+            )
+
+            print("Bootstrap status:", resp.status_code)
+
+            x_user = resp.headers.get("x-user")
+
+            if not x_user:
+                print("Bootstrap body:", resp.text[:500])
+                raise HTTPException(
+                    status_code=502,
+                    detail="MovieBox token unavailable; check Vercel logs",
+                )
+
+            token_data = json.loads(x_user)
+            token = token_data.get("token")
+
+            if not token:
+                raise HTTPException(
+                    status_code=502,
+                    detail="Empty token in upstream header",
+                )
+
+            self.bearer_token = token
+            return token
+
+        except HTTPException:
+            raise
+        except Exception as exc:
+            print("Bootstrap error:", type(exc).__name__)
+            raise HTTPException(
+                status_code=502,
+                detail="MovieBox token request failed",
+            )
 
     def api_request(self, method: str, path_or_url: str, body_dict: Optional[Dict[str, Any]] = None, use_token: bool = True, retry_auth: bool = True) -> Dict[str, Any]:
         if path_or_url.startswith("http://") or path_or_url.startswith("https://"):
